@@ -4,7 +4,7 @@ import Container from '../components/Container.component';
 import TextVarients from '../components/TextVarients';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCartSelector} from '../common/selectors/products.selector';
-import {ProductItemType, StackParams} from '../types';
+import {CartItemType, StackParams} from '../types';
 import Button from '../components/Button.component';
 import {BACK_BUTTON, CHECKOUT_BUTTON_LABEL} from '../common/constants';
 import {
@@ -23,10 +23,10 @@ const Cart = () => {
     backgroundColor: colors.gray,
     marginTop: 10,
   };
-  const containerStyle = {backgroundColor: colors.white};
+  const containerStyle = {flex: 1, backgroundColor: colors.white};
   const navigation = useNavigation<NativeStackNavigationProp<StackParams>>();
 
-  const renderItems = ({item}: {item: ProductItemType}) => {
+  const renderItems = ({item}: {item: CartItemType}) => {
     const OnIncrementItemCount = () => dispatch(incrementItemCount(item.id));
     const onDecrementCount = () => dispatch(decrementItemCount(item.id));
     const navToItemDetails = () =>
@@ -39,17 +39,17 @@ const Cart = () => {
           onPress={navToItemDetails}>
           <View className="flex-1 p-2">
             <Image
-              source={{uri: item.mainImage}}
+              source={{uri: item?.mainImage}}
               className="h-24 w-24 rounded-md"
             />
             <TextVarients fontSize={16} numberOfLines={1} className="mt-2">
-              {item.name}
+              {item?.name}
             </TextVarients>
             <TextVarients className="mt-1">
-              {`${item.price.currency} ${item.price.amount}`}
+              {`${item?.price?.currency} ${item?.price?.amount}`}
             </TextVarients>
             <TextVarients className="mt-1">
-              Size: {item.selectedSize}
+              Size: {item?.selectedSize}
             </TextVarients>
           </View>
 
@@ -62,7 +62,7 @@ const Cart = () => {
               </TextVarients>
             </TouchableOpacity>
             <TextVarients className="mx-4 border-2 p-1 rounded">
-              {item.ItemCount}
+              {item?.ItemCount}
             </TextVarients>
             <TouchableOpacity
               onPress={onDecrementCount}

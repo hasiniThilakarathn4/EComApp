@@ -9,25 +9,25 @@ const INITIAL_STATE: ProductReducer = {
 export default (
   state = INITIAL_STATE,
   {type, payload}: {type: string; payload: any},
-): any => {
+): ProductReducer => {
   switch (type) {
     case ACTIONS.SET_CART_ITEMS:
       const exists = state.cartItems.find(
-        (item: CartItemType) => item.id === payload.id,
+        (item: CartItemType) => item?.id === payload?.id,
       );
       if (exists) {
         return {
           ...state,
           cartItems: state?.cartItems.map(item =>
-            item.id === payload.id
-              ? {...item, ItemCount: (item.ItemCount || 0) + 1}
+            item?.id === payload?.id
+              ? {...item, ItemCount: (item?.ItemCount || 0) + 1}
               : item,
           ),
         };
       } else {
         return {
           ...state,
-          cartItems: [...state.cartItems, payload],
+          cartItems: [...state.cartItems, {...payload, ItemCount: 1}],
         };
       }
     case ACTIONS.SET_PRODUCT_DATA:
@@ -39,8 +39,8 @@ export default (
       return {
         ...state,
         cartItems: state?.cartItems.map(item =>
-          item.id === payload.id
-            ? {...item, ItemCount: (item.ItemCount || 0) + 1}
+          item?.id === payload?.id
+            ? {...item, ItemCount: (item?.ItemCount || 0) + 1}
             : item,
         ),
       };
@@ -48,8 +48,8 @@ export default (
       return {
         ...state,
         cartItems: state?.cartItems.map(item =>
-          item.id === payload.id
-            ? {...item, ItemCount: Math.max((item.ItemCount || 0) - 1, 0)}
+          item?.id === payload.id
+            ? {...item, ItemCount: Math.max((item?.ItemCount || 0) - 1, 0)}
             : item,
         ),
       };

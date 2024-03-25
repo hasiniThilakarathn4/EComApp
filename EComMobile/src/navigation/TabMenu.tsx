@@ -3,9 +3,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SCREENS from '../screens';
 import {HomeNavigation} from './HomeNavigation';
 import {CartNavigation} from './CartNavigation';
-import {AppRoutes} from './AppRoutes';
 
-const Tab = createBottomTabNavigator<any>();
+const Tab = createBottomTabNavigator();
 
 enum ScreenOptions {
   HOME = 'Home',

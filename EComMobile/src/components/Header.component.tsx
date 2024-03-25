@@ -7,8 +7,8 @@ import {StackParams} from '../types';
 import SCREENS from '../screens';
 
 type OwnProps = {
-  prefix?: any;
-  postfix?: any;
+  prefix?: string;
+  postfix?: string;
 };
 //Header for screens
 const Header = ({prefix, postfix}: OwnProps) => {
@@ -20,6 +20,7 @@ const Header = ({prefix, postfix}: OwnProps) => {
 
   const navToCart = () =>
     navigation.navigate({name: SCREENS.CART_SCREEN, params: {}});
+
   return (
     <>
       <StatusBar barStyle={'dark-content'} />

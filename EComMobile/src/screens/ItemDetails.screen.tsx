@@ -1,12 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {
-  Image,
-  Modal,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
 import Container from '../components/Container.component';
 import TextVarients from '../components/TextVarients';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
@@ -15,10 +8,7 @@ import SCREENS from '.';
 import Button from '../components/Button.component';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack/lib/typescript/src/types';
 import {useDispatch} from 'react-redux';
-import {
-  incrementItemCount,
-  setCartItems,
-} from '../common/actions/products.action';
+import {setCartItems} from '../common/actions/products.action';
 import {
   ADD_TO_CART_BUTTON_LABEL,
   BACK_BUTTON,
@@ -44,25 +34,25 @@ const ItemDetails = () => {
   const containerStyle = {backgroundColor: colors.white, flex: 1};
   const buyNowButtonStyle = {backgroundColor: colors.yellow};
   const addToCartButtonStyle = {backgroundColor: colors.gray};
+  const contentContainerStyle = {paddingBottom: 50};
   const itemToAdd: CartItemType = {
-    id: params.item.id,
-    name: params.item.name,
-    mainImage: params.item.mainImage,
-    price: params.item.price,
-    colour: params.item.colour,
-    sizes: params.item.sizes,
-    SKU: params.item.SKU,
-    stockStatus: params.item.stockStatus,
-    brandName: params.item.brandName,
+    id: params?.item?.id,
+    name: params?.item?.name,
+    mainImage: params?.item?.mainImage,
+    price: params?.item?.price,
+    colour: params?.item?.colour,
+    sizes: params?.item?.sizes,
+    SKU: params?.item?.SKU,
+    stockStatus: params?.item?.stockStatus,
+    brandName: params?.item?.brandName,
     selectedSize: selectedSize,
     description: params?.item?.description,
   };
 
   const handleItemToAdd = () => {
     setSizeError(!selectedSize);
-    if (selectedSize && params.item.stockStatus === IN_STOCK) {
+    if (selectedSize && params?.item?.stockStatus === IN_STOCK) {
       dispatch(setCartItems(itemToAdd));
-      dispatch(incrementItemCount(params.item.id));
     }
   };
 
@@ -84,7 +74,7 @@ const ItemDetails = () => {
         {params?.item?.sizes.map((price: string, index: number) => {
           const handleOnPress = () => setSelectedSize(price);
           const borderColor = {
-            borderColor: selectedSize === price ? 'red' : 'gray',
+            borderColor: selectedSize === price ? colors.red : colors.gray,
           };
           return (
             <TouchableOpacity
@@ -92,7 +82,7 @@ const ItemDetails = () => {
               className="flex items-center border-2 rounded-lg w-8 m-4"
               style={borderColor}
               onPress={handleOnPress}>
-              <Text>{price}</Text>
+              <TextVarients>{price}</TextVarients>
             </TouchableOpacity>
           );
         })}
@@ -101,18 +91,9 @@ const ItemDetails = () => {
     [selectedSize],
   );
 
-  const onModalClose = () => setIsItemAdded(false);
-  return (
-    <Container
-      prefix={BACK_BUTTON}
-      style={containerStyle}
-      postfix={CART_BUTTON}>
-      <ScrollView>
-        <ModalContainer
-          isVisible={isItemAdded}
-          message={ITEM_ADDED_MESSAGE}
-          onModalClose={onModalClose}
-        />
+  const renderProductDetails = useMemo(
+    () => (
+      <>
         <View className="flex items-center">
           <Image
             source={{
@@ -121,7 +102,6 @@ const ItemDetails = () => {
             className="h-60 w-60"
           />
         </View>
-
         <TextVarients fontSize={20}>
           {params?.item?.SKU + ' : ' + params?.item?.name}
         </TextVarients>
@@ -130,9 +110,29 @@ const ItemDetails = () => {
         </TextVarients>
         <TextVarients>{'Brand Name: ' + params?.item?.brandName}</TextVarients>
         <TextVarients>{params?.item?.description}</TextVarients>
-        <TextVarients>Color: {params?.item?.colour}</TextVarients>
-        <TextVarients color={'green'}>{params?.item?.stockStatus}</TextVarients>
+        <TextVarients>{'Color: ' + params?.item?.colour}</TextVarients>
+        <TextVarients color={colors.green}>
+          {params?.item?.stockStatus}
+        </TextVarients>
+      </>
+    ),
+    [params?.item],
+  );
 
+  const onModalClose = () => setIsItemAdded(false);
+  const toggleModal = () => isItemAdded && !sizeError;
+  return (
+    <Container
+      prefix={BACK_BUTTON}
+      style={containerStyle}
+      postfix={CART_BUTTON}>
+      <ScrollView contentContainerStyle={contentContainerStyle}>
+        <ModalContainer
+          isVisible={toggleModal()}
+          message={ITEM_ADDED_MESSAGE}
+          onModalClose={onModalClose}
+        />
+        {renderProductDetails}
         {renderPriceList}
 
         <Button
@@ -147,7 +147,7 @@ const ItemDetails = () => {
         />
 
         {sizeError && (
-          <TextVarients color="red">{SIZE_ERROR_MESSAGE}</TextVarients>
+          <TextVarients color={colors.red}>{SIZE_ERROR_MESSAGE}</TextVarients>
         )}
       </ScrollView>
     </Container>

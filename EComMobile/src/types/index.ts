@@ -33,7 +33,7 @@ export type ProductPriceType = {
 };
 
 export type ProductReducer = {
-  cartItems: any;
+  cartItems: CartItemType[];
   products: ProductItemType[];
 };
 

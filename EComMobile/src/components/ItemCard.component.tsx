@@ -13,17 +13,15 @@ const ItemCard = ({item, onPress}: OwnProps) => {
     <TouchableOpacity
       onPress={onPress}
       className="flex-1 border-2 rounded-md m-1 p-3">
-      <Image source={{uri: item.mainImage}} style={{height: 50, width: 50}} />
+      <Image source={{uri: item?.mainImage}} className="h-36 w-36" />
       <TextVarients fontSize={15} numberOfLines={1}>
-        {item.name}
+        {item?.name}
       </TextVarients>
-      <TextVarients numberOfLines={2}>{item.description}</TextVarients>
-
+      <TextVarients numberOfLines={2}>{item?.description}</TextVarients>
       <TextVarients>
-        {item.price.currency + ' ' + item.price.amount}
+        {item?.price?.currency + ' ' + item?.price?.amount}
       </TextVarients>
-
-      <TextVarients>Color: {item.colour}</TextVarients>
+      <TextVarients>Color: {item?.colour}</TextVarients>
     </TouchableOpacity>
   );
 };

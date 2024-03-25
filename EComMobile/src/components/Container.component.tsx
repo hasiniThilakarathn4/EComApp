@@ -5,8 +5,8 @@ import Header from './Header.component';
 type OwnProps = {
   children?: JSX.Element | JSX.Element[] | React.ReactNode;
   style?: StyleProp<ViewStyle>;
-  prefix?: any;
-  postfix?: any;
+  prefix?: string;
+  postfix?: string;
 };
 
 //Component to use as the Container throughout the app
