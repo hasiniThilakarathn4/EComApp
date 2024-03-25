@@ -14,3 +14,13 @@ export const setCartItems = (payload: CartItemType) => ({
   type: ACTIONS.SET_CART_ITEMS,
   payload,
 });
+
+export const incrementItemCount = (id: string) => ({
+  type: ACTIONS.INCREMENT_ITEM_COUNT,
+  payload: {id},
+});
+
+export const decrementItemCount = (id: string) => ({
+  type: ACTIONS.DECREMENT_ITEM_COUNT,
+  payload: {id},
+});

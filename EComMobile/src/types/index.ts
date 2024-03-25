@@ -9,21 +9,22 @@ export type StackParams = {
 export type ItemDetailScreenParams = {
   item: ProductItemType;
 };
-export interface ProductItemType extends CartItemType {
-  sizes: string[];
+export interface ProductItemType {
   stockStatus: string;
   description: string;
-  SKU: string;
   brandName: string;
-}
-
-export interface CartItemType {
   id: string;
   name: string;
   mainImage: string;
   price: ProductPriceType;
   colour: string;
+  SKU: string;
+  sizes: string[];
+}
+
+export interface CartItemType extends ProductItemType {
   selectedSize: string;
+  ItemCount?: number;
 }
 
 export type ProductPriceType = {
@@ -33,7 +34,6 @@ export type ProductPriceType = {
 
 export type ProductReducer = {
   cartItems: any;
-  itemCount: any;
   products: ProductItemType[];
 };
 

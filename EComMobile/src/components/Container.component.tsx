@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleProp,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
-import Header from './Header';
+import {SafeAreaView, StyleProp, View, ViewStyle} from 'react-native';
+import Header from './Header.component';
 
 type OwnProps = {
   children?: JSX.Element | JSX.Element[] | React.ReactNode;

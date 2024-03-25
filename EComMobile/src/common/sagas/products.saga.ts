@@ -4,8 +4,8 @@ import ProductAPI from '../api/products.api';
 
 function* getProductData() {
   try {
-    const data = yield call(ProductAPI.getProductData);
-    yield put({type: ACTIONS.SET_PRODUCT_DATA, payload: data.data});
+    const response = yield call(ProductAPI.getProductData);
+    yield put({type: ACTIONS.SET_PRODUCT_DATA, payload: response.data.data});
   } catch (error) {
     console.log('Failed to fetch product data', error);
   }

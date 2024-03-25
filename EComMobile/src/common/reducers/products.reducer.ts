@@ -3,7 +3,6 @@ import {ACTIONS} from '../actions/actionTypes';
 
 const INITIAL_STATE: ProductReducer = {
   cartItems: [],
-  itemCount: 0,
   products: [],
 };
 
@@ -19,7 +18,11 @@ export default (
       if (exists) {
         return {
           ...state,
-          itemCount: {...(state.itemCount + 1)},
+          cartItems: state?.cartItems.map(item =>
+            item.id === payload.id
+              ? {...item, ItemCount: (item.ItemCount || 0) + 1}
+              : item,
+          ),
         };
       } else {
         return {
@@ -31,6 +34,24 @@ export default (
       return {
         ...state,
         products: payload,
+      };
+    case ACTIONS.INCREMENT_ITEM_COUNT:
+      return {
+        ...state,
+        cartItems: state?.cartItems.map(item =>
+          item.id === payload.id
+            ? {...item, ItemCount: (item.ItemCount || 0) + 1}
+            : item,
+        ),
+      };
+    case ACTIONS.DECREMENT_ITEM_COUNT:
+      return {
+        ...state,
+        cartItems: state?.cartItems.map(item =>
+          item.id === payload.id
+            ? {...item, ItemCount: Math.max((item.ItemCount || 0) - 1, 0)}
+            : item,
+        ),
       };
     default:
       return state;

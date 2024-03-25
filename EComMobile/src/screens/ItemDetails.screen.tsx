@@ -1,15 +1,24 @@
 import React, {useMemo, useState} from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import Container from '../components/Container';
+import {
+  Image,
+  Modal,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Container from '../components/Container.component';
 import TextVarients from '../components/TextVarients';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {CartItemType, StackParams} from '../types';
 import SCREENS from '.';
-import Button from '../components/Button';
+import Button from '../components/Button.component';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack/lib/typescript/src/types';
-import {useDispatch, useSelector} from 'react-redux';
-import {setCartItems} from '../common/actions/products.action';
-import {getCartSelector} from '../common/selectors/products.selector';
+import {useDispatch} from 'react-redux';
+import {
+  incrementItemCount,
+  setCartItems,
+} from '../common/actions/products.action';
 import {
   ADD_TO_CART_BUTTON_LABEL,
   BACK_BUTTON,
@@ -17,41 +26,61 @@ import {
   CART_BUTTON,
   IN_STOCK,
 } from '../common/constants';
+import ModalContainer from '../components/ModalContainer.component';
+import colors from '../res/colors';
 
 type RouterProps = RouteProp<StackParams, SCREENS.ITEM_DETAIL_SCREEN>;
 
 const SIZE_ERROR_MESSAGE = 'Please Select a Size';
+const ITEM_ADDED_MESSAGE = 'Item added to cart';
 
 const ItemDetails = () => {
   const {params} = useRoute<RouterProps>();
   const [selectedSize, setSelectedSize] = useState<string>(null);
+  const [isItemAdded, setIsItemAdded] = useState<boolean>(false);
   const [sizeError, setSizeError] = useState<boolean>(false);
   const navigation = useNavigation<NativeStackNavigationProp<StackParams>>();
   const dispatch = useDispatch();
-  const currentCart = useSelector(getCartSelector);
-  const containerStyle = {backgroundColor: 'white', flex: 1};
-  const buyNowButtonStyle = {backgroundColor: 'yellow'};
-  const addToCartButtonStyle = {backgroundColor: 'gray'};
+  const containerStyle = {backgroundColor: colors.white, flex: 1};
+  const buyNowButtonStyle = {backgroundColor: colors.yellow};
+  const addToCartButtonStyle = {backgroundColor: colors.gray};
+  const itemToAdd: CartItemType = {
+    id: params.item.id,
+    name: params.item.name,
+    mainImage: params.item.mainImage,
+    price: params.item.price,
+    colour: params.item.colour,
+    sizes: params.item.sizes,
+    SKU: params.item.SKU,
+    stockStatus: params.item.stockStatus,
+    brandName: params.item.brandName,
+    selectedSize: selectedSize,
+    description: params?.item?.description,
+  };
 
-  const navToCart = () => {
+  const handleItemToAdd = () => {
     setSizeError(!selectedSize);
     if (selectedSize && params.item.stockStatus === IN_STOCK) {
-      const cartItem: CartItemType = {
-        id: params.item.id,
-        name: params.item.name,
-        mainImage: params.item.mainImage,
-        price: params.item.price,
-        colour: params.item.colour,
-        selectedSize: selectedSize,
-      };
+      dispatch(setCartItems(itemToAdd));
+      dispatch(incrementItemCount(params.item.id));
+    }
+  };
 
-      dispatch(setCartItems(cartItem));
+  const navToCart = () => {
+    handleItemToAdd();
+    if (selectedSize && params.item.stockStatus === IN_STOCK) {
       navigation.navigate({name: SCREENS.CART_SCREEN, params: {}});
     }
   };
+
+  const handleAddToCart = () => {
+    handleItemToAdd();
+    setIsItemAdded(true);
+  };
+
   const renderPriceList = useMemo(
     () => (
-      <View style={{display: 'flex', flexDirection: 'row'}}>
+      <View className="flex-row">
         {params?.item?.sizes.map((price: string, index: number) => {
           const handleOnPress = () => setSelectedSize(price);
           const borderColor = {
@@ -72,12 +101,18 @@ const ItemDetails = () => {
     [selectedSize],
   );
 
+  const onModalClose = () => setIsItemAdded(false);
   return (
     <Container
       prefix={BACK_BUTTON}
       style={containerStyle}
       postfix={CART_BUTTON}>
       <ScrollView>
+        <ModalContainer
+          isVisible={isItemAdded}
+          message={ITEM_ADDED_MESSAGE}
+          onModalClose={onModalClose}
+        />
         <View className="flex items-center">
           <Image
             source={{
@@ -86,28 +121,31 @@ const ItemDetails = () => {
             className="h-60 w-60"
           />
         </View>
+
         <TextVarients fontSize={20}>
           {params?.item?.SKU + ' : ' + params?.item?.name}
         </TextVarients>
         <TextVarients>
-          {params?.item?.price?.currency + ' ' + params?.item?.price?.amount}
+          {`${params?.item?.price?.currency} ${params?.item?.price?.amount}`}
         </TextVarients>
         <TextVarients>{'Brand Name: ' + params?.item?.brandName}</TextVarients>
-
         <TextVarients>{params?.item?.description}</TextVarients>
         <TextVarients>Color: {params?.item?.colour}</TextVarients>
         <TextVarients color={'green'}>{params?.item?.stockStatus}</TextVarients>
+
         {renderPriceList}
+
         <Button
           containerStyles={addToCartButtonStyle}
           label={ADD_TO_CART_BUTTON_LABEL}
-          onPress={() => {}}
+          onPress={handleAddToCart}
         />
         <Button
           containerStyles={buyNowButtonStyle}
           label={BUY_NOW_BUTTON_LABEL}
           onPress={navToCart}
         />
+
         {sizeError && (
           <TextVarients color="red">{SIZE_ERROR_MESSAGE}</TextVarients>
         )}
