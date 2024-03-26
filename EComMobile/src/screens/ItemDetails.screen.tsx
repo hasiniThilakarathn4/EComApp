@@ -121,6 +121,7 @@ const ItemDetails = () => {
 
   const onModalClose = () => setIsItemAdded(false);
   const toggleModal = () => isItemAdded && !sizeError;
+
   return (
     <Container
       prefix={BACK_BUTTON}

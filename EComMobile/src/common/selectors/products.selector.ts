@@ -10,5 +10,5 @@ export const getCartSelector = createSelector(
 
 export const getProductsSelector = createSelector(
   productsSelector,
-  products => products.products,
+  products => products?.products,
 );

@@ -6,9 +6,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getCartSelector} from '../common/selectors/products.selector';
 import {CartItemType, StackParams} from '../types';
 import Button from '../components/Button.component';
-import {BACK_BUTTON, CHECKOUT_BUTTON_LABEL} from '../common/constants';
+import {
+  BACK_BUTTON,
+  CHECKOUT_BUTTON_LABEL,
+  DELETE_BUTTON_LABEL,
+} from '../common/constants';
 import {
   decrementItemCount,
+  deleteItem,
   incrementItemCount,
 } from '../common/actions/products.action';
 import colors from '../res/colors';
@@ -23,14 +28,17 @@ const Cart = () => {
     backgroundColor: colors.gray,
     marginTop: 10,
   };
+  const contentContainerStyle = {paddingBottom: 80};
   const containerStyle = {flex: 1, backgroundColor: colors.white};
+  const btnStyle = {backgroundColor: colors.red, padding: 2};
   const navigation = useNavigation<NativeStackNavigationProp<StackParams>>();
 
   const renderItems = ({item}: {item: CartItemType}) => {
-    const OnIncrementItemCount = () => dispatch(incrementItemCount(item.id));
-    const onDecrementCount = () => dispatch(decrementItemCount(item.id));
+    const OnIncrementItemCount = () => dispatch(incrementItemCount(item?.id));
+    const onDecrementCount = () => dispatch(decrementItemCount(item?.id));
     const navToItemDetails = () =>
       navigation.navigate({name: SCREENS.ITEM_DETAIL_SCREEN, params: {item}});
+    const onPressDelete = () => dispatch(deleteItem(item?.id));
 
     return (
       <View className="border-b-2 border-gray-400">
@@ -70,20 +78,26 @@ const Cart = () => {
               <TextVarients className="text-white">-</TextVarients>
             </TouchableOpacity>
           </View>
+          <Button
+            label={DELETE_BUTTON_LABEL}
+            onPress={onPressDelete}
+            containerStyles={btnStyle}
+          />
         </TouchableOpacity>
       </View>
     );
   };
 
   const onPressCheckout = () => {};
+  const keyExtractor = (item: CartItemType) => item?.id;
 
   return (
     <Container prefix={BACK_BUTTON} style={containerStyle}>
       <FlatList
         data={cartItems}
-        keyExtractor={item => item.id}
+        keyExtractor={keyExtractor}
         renderItem={renderItems}
-        contentContainerStyle={{paddingBottom: 80}}
+        contentContainerStyle={contentContainerStyle}
         ListFooterComponent={
           <Button
             label={CHECKOUT_BUTTON_LABEL}

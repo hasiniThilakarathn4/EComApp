@@ -24,3 +24,8 @@ export const decrementItemCount = (id: string) => ({
   type: ACTIONS.DECREMENT_ITEM_COUNT,
   payload: {id},
 });
+
+export const deleteItem = (id: string) => ({
+  type: ACTIONS.DELETE_CART_ITEM,
+  payload: {id},
+});

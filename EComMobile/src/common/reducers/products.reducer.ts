@@ -53,6 +53,11 @@ export default (
             : item,
         ),
       };
+    case ACTIONS.DELETE_CART_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter(item => item?.id !== payload?.id),
+      };
     default:
       return state;
   }
